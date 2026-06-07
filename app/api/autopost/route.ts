@@ -60,6 +60,16 @@ export async function POST(req: Request) {
       url: post.url
     })
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 })
+    return NextResponse.json({ 
+      error: err.message,
+      details: err.response?.data || null,
+      env_check: {
+        has_gemini: !!process.env.GEMINI_API_KEY,
+        has_client_id: !!process.env.BLOGGER_CLIENT_ID,
+        has_client_secret: !!process.env.BLOGGER_CLIENT_SECRET,
+        has_refresh_token: !!process.env.BLOGGER_REFRESH_TOKEN,
+        has_blog_id: !!process.env.BLOGGER_BLOG_ID,
+      }
+    }, { status: 500 })
   }
 }
