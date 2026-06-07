@@ -25,16 +25,7 @@ async function getAccessToken() {
 
 async function generateArticle(topic: string) {
   const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
-  
-  const prompt = `Tulis artikel blog bahasa Indonesia tentang: "${topic}"
-  
-Balas HANYA dengan JSON tanpa backtick, format:
-{
-  "title": "judul artikel menarik dan SEO friendly",
-  "content": "isi artikel dalam format HTML menggunakan tag h2, p, ul, strong. Minimal 600 kata.",
-  "labels": ["tag1", "tag2", "tag3"]
-}`
-
+  const prompt = `Tulis artikel blog bahasa Indonesia tentang: "${topic}"\n\nBalas HANYA dengan JSON tanpa backtick, format:\n{\n  "title": "judul artikel menarik dan SEO friendly",\n  "content": "isi artikel dalam format HTML menggunakan tag h2, p, ul, strong. Minimal 600 kata.",\n  "labels": ["tag1", "tag2", "tag3"]\n}`
   const result = await model.generateContent(prompt)
   const text = result.response.text().replace(/```json|```/g, '').trim()
   return JSON.parse(text)
@@ -56,21 +47,12 @@ async function postToBlogger(article: any, token: string) {
 
 export async function POST(req: Request) {
   try {
-    const { searchParams } = new URL(req.url)
-    if (searchParams.get('secret') !== 'rahasiasuper123') {
-  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-}
-    }
-
     const topic = TOPICS[Math.floor(Math.random() * TOPICS.length)]
-    
     const [article, token] = await Promise.all([
       generateArticle(topic),
       getAccessToken()
     ])
-    
     const post = await postToBlogger(article, token)
-    
     return NextResponse.json({
       success: true,
       postId: post.id,
