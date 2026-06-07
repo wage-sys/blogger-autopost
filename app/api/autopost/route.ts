@@ -24,7 +24,7 @@ async function getAccessToken() {
 }
 
 async function generateArticle(topic: string) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
   const prompt = `Tulis artikel blog bahasa Indonesia tentang: "${topic}"\n\nBalas HANYA dengan JSON tanpa backtick, format:\n{\n  "title": "judul artikel menarik dan SEO friendly",\n  "content": "isi artikel dalam format HTML menggunakan tag h2, p, ul, strong. Minimal 600 kata.",\n  "labels": ["tag1", "tag2", "tag3"]\n}`
   const result = await model.generateContent(prompt)
   const text = result.response.text().replace(/```json|```/g, '').trim()
