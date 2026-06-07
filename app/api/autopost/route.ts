@@ -57,8 +57,9 @@ async function postToBlogger(article: any, token: string) {
 export async function POST(req: Request) {
   try {
     const { searchParams } = new URL(req.url)
-    if (searchParams.get('secret') !== process.env.CRON_SECRET) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (searchParams.get('secret') !== 'rahasiasuper123') {
+  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+}
     }
 
     const topic = TOPICS[Math.floor(Math.random() * TOPICS.length)]
